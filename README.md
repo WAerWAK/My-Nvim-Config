@@ -19,7 +19,7 @@
 
 <div align="center">
   <img src="docs/%E7%95%8C%E9%9D%A2%E9%A2%84%E8%A7%88.png" alt="My-Nvim-Config 界面预览" width="900">
-  <p><em>左侧文件树 · 中间汉化启动页 · 底部状态栏</em></p>
+  <p><em>左侧文件树 · 中间汉化启动页</em></p>
 </div>
 
 ---
