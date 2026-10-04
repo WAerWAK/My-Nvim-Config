@@ -47,6 +47,9 @@ keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<CR>", { desc = "搜索�
 keymap.set("n", "<leader>ll", "<cmd>Lazy<CR>", { desc = "插件管理（勿用全量更新）" })
 keymap.set("n", "<leader>lm", "<cmd>Mason<CR>", { desc = "LSP 与工具管理" })
 
+-- 回到启动页（关闭文件后想回到 MYNVIM 主界面时用）
+keymap.set("n", "<leader>d", "<cmd>Dashboard<CR>", { desc = "回到启动页" })
+
 -- ===== 为 Neovim / 插件内置的键位补中文说明 =====
 -- 这些映射来自 Neovim 运行时与 Comment.nvim，本身没有中文 desc，
 -- which-key 菜单（如按 g）会显示英文。这里只补 desc、不改动原行为。
