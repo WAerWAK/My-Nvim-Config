@@ -1,51 +1,77 @@
 # My-Nvim-Config
 
-个人使用的 Neovim 完整配置，基于 **lazy.nvim** 从零搭建，为 Windows 环境做了适配与汉化。
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-0078D4)](#环境要求)
+[![Neovim](https://img.shields.io/badge/Neovim-0.12%2B-57A143?logo=neovim&logoColor=white)](#环境要求)
+[![lazy.nvim](https://img.shields.io/badge/plugin%20manager-lazy.nvim-2C3E50)](#插件清单)
+[![Shell](https://img.shields.io/badge/shell-PowerShell%207-5391FE)](#环境要求)
+[![Terminal](https://img.shields.io/badge/terminal-WezTerm%20nightly-4E49EE)](#界面预览)
+[![Prompt](https://img.shields.io/badge/prompt-Oh%20My%20Posh-3B82F6)](#界面预览)
+[![Localization](https://img.shields.io/badge/UI-%E4%B8%AD%E6%96%87%E6%B1%89%E5%8C%96-E67E22)](#界面汉化)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-换电脑时只需克隆本仓库并执行一条安装命令，即可还原完全一致的编辑环境。
+一套可直接使用的 **Neovim 完整配置**，基于 lazy.nvim 搭建，开箱即用。
 
----
-
-## 目录
-
-- [特性一览](#特性一览)
-- [环境要求](#环境要求)
-- [快速开始](#快速开始)
-- [仓库结构](#仓库结构)
-- [配置详解](#配置详解)
-- [键位速查](#键位速查)
-- [日常维护](#日常维护)
-- [常见问题](#常见问题)
-- [更新日志](#更新日志)
+它不只是插件列表 —— 还包含 **Windows / Neovim 0.12 环境适配**、**界面中文化**、**版本锁定** 与 **一键安装脚本**，让你跳过反复试错，几分钟内得到一套稳定的编辑环境。
 
 ---
 
-## 特性一览
+## 界面预览
+
+<div align="center">
+  <img src="docs/%E7%95%8C%E9%9D%A2%E9%A2%84%E8%A7%88.png" alt="My-Nvim-Config 界面预览" width="900">
+  <p><em>左侧文件树 · 中间汉化启动页 · 底部状态栏</em></p>
+</div>
+
+---
+
+## 这套配置适合谁
+
+**适合你，如果**：
+
+- 想直接用一套能跑的 Neovim 配置，而不是从零折腾插件
+- 在 **Windows** 上用 Neovim，被 `gcc` / `cc` / 剪贴板 / treesitter 编译等问题卡住过
+- 使用 **Neovim 0.12+**，发现网上的配置因 API 变更而报错
+- 希望界面是**中文**的，而不是满屏英文
+- 想在不同电脑间**快速同步**同一套配置
+
+**可能不适合你，如果**：
+
+- 偏好 Vimscript 而非 Lua
+- 需要极致精简（本配置含 34 个插件）
+- 使用 Neovim 0.11 或更早（见 [环境要求](#环境要求)）
+
+---
+
+## 核心特性
 
 | 能力 | 实现 | 说明 |
 |------|------|------|
-| 插件管理 | lazy.nvim | 34 个插件，版本锁定在 `lazy-lock.json` |
-| 语法高亮 | nvim-treesitter（**main 分支**） | 20 个语言解析器，含 Java / PowerShell / C# |
+| 插件管理 | lazy.nvim | **34 个插件**，版本锁定于 `lazy-lock.json` |
+| 语法高亮 | nvim-treesitter（**main 分支**） | **20 个语言**解析器，含 Java / PowerShell / C# |
 | 代码补全 | nvim-cmp + LuaSnip | LSP、代码片段、文件路径、缓冲区多源补全 |
-| 语言服务器 | mason + nvim-lspconfig | 7 个 LSP：Lua、TypeScript、CSS、Vue、HTML、C/C++、Java |
+| 语言服务器 | mason + nvim-lspconfig | **7 个 LSP**：Lua、TypeScript、CSS、Vue、HTML、C/C++、Java |
 | 文件查找 | Telescope | 标题已汉化，覆盖 35 个 picker |
-| 文件树 | nvim-tree | 快捷键 `<空格>e` |
-| 代码大纲 | aerial | 快捷键 `<空格>a` |
-| 状态栏 | lualine | 未命名文件等标记已汉化 |
+| 文件树 / 大纲 | nvim-tree / aerial | 快捷键 `<空格>e` / `<空格>a` |
+| 状态栏 | lualine | 中文化标记 |
 | Git | gitsigns | 左侧改动标记 |
-| Markdown | render-markdown | 开启即渲染（标题放大、表格画框） |
-| **界面汉化** | 自研补丁机制 | 启动页、`:Lazy`、`:Mason`、Telescope、键位提示等 |
-| 内置键位汉化 | 自研映射 | `<C-w>` 窗口系列 18 个 + `g` 系列 3 个 |
+| Markdown | render-markdown | 打开即渲染（标题放大、表格画框）|
+| 内置终端 | toggleterm | `Alt+p` 浮动终端 |
+| **界面汉化** | 自研补丁机制 | 启动页、Lazy、Mason、Telescope、键位提示 |
+| **内置键位汉化** | 自研映射 | `<C-w>` 窗口系列 18 个 + `g` 系列 3 个 |
 
-### 界面汉化说明
+### 为什么选这套，而不是从零配置
 
-Neovim 本身没有中文语言包，插件的界面文本也全部硬编码在源码里。本配置通过 `lua/core/chinese.lua` 的 **patch 机制**解决：
+从零搭建 Neovim 时最耗时的往往不是"装插件"，而是踩这些坑 —— 本配置已经处理完并记录在案：
 
-- 在启动后延迟检查并替换插件源码中的界面文本
-- **幂等**：文本已替换则跳过，不会重复处理
-- **抗更新**：插件更新后下次启动自动重新汉化
-
-已汉化范围：启动页、`:Lazy` 主界面、`:Mason` 主界面与帮助页、Telescope 标题与预览窗、nvim-tree 输入提示、Comment.nvim 注释键位、`<C-w>` 与 `g` 内置键位菜单、常用系统消息。
+| 坑 | 表现 | 本配置的处理 |
+|----|------|--------------|
+| treesitter 分支选错 | 打开 Markdown 报 `range (a nil value)` | 固定使用 **main 分支**（适配 0.12）|
+| 缺 tree-sitter CLI | 解析器编译报 `ENOENT: 'tree-sitter'` | 文档说明 + 安装脚本自动处理 |
+| `cc` 命令缺失 | Windows 上解析器编译失败 | 安装脚本自动创建 `cc.exe` 别名 |
+| LSP 配置变量未定义 | 补全能力为 `nil`，LSP 形同虚设 | 已修复上游 7 处 bug |
+| npm 11 拦截安装脚本 | tree-sitter CLI 装了但不可用 | 文档强调 `--allow-scripts` 参数 |
+| 全量更新打断配置 | `:Lazy update` 后 `lsp.lua` 报错 | 关闭自动检查 + 提供 `:Lazy restore` 回退 |
+| 插件界面全英文 | 看不懂菜单 | 自研 patch 机制汉化，且**抗插件更新** |
 
 ---
 
@@ -55,13 +81,13 @@ Neovim 本身没有中文语言包，插件的界面文本也全部硬编码在�
 
 | 组件 | 版本 | 用途 |
 |------|------|------|
-| Neovim | **0.12.0+** | 配置使用了 0.12 的 API |
+| **Neovim** | **0.12.0+** | 配置使用了 0.12 的 API（treesitter main 分支要求）|
 | git | 任意 | 下载插件 |
 | gcc | 任意 | 编译 treesitter 解析器 |
-| tree-sitter CLI | 0.27+ | **驱动解析器编译流程**（与 gcc 缺一不可）|
+| **tree-sitter CLI** | 0.27+ | **驱动解析器编译流程**（与 gcc 缺一不可）|
 | ripgrep | 任意 | Telescope 全文搜索 |
 | fd | 任意 | Telescope 文件查找 |
-| Node.js | 18+ | vtsls / css-lsp 等所需 |
+| Node.js | 18+ | vtsls / css-lsp 等 LSP 所需 |
 | Nerd Font | 任意 | 图标显示（推荐 JetBrainsMono NF）|
 
 ### 可选
@@ -73,7 +99,7 @@ Neovim 本身没有中文语言包，插件的界面文本也全部硬编码在�
 | lazygit | Git 终端界面 | 无影响 |
 | PowerShell 7 | toggleterm 的 shell | `Alt+p` 终端打不开 |
 
-> **gcc 与 tree-sitter CLI 的分工**：gcc 把 C 源码编译成 `.so`，tree-sitter CLI 驱动整个编译流程（生成 `parser.c` 并调用 gcc）。只装 gcc 会报 `ENOENT: 'tree-sitter'`。
+> **gcc 与 tree-sitter CLI 的分工**：gcc 负责把 C 源码编译成 `.so`，tree-sitter CLI 负责驱动整个编译流程（生成 `parser.c` 并调用 gcc）。**只装 gcc 会报 `ENOENT: 'tree-sitter'`。**
 
 ---
 
@@ -86,19 +112,17 @@ Neovim 本身没有中文语言包，插件的界面文本也全部硬编码在�
 scoop install neovim gcc ripgrep fd lazygit win32yank
 
 # 2. 安装 tree-sitter CLI
-#    注意：npm 11 起默认拦截安装脚本，必须加 --allow-scripts
+#    注意：npm 11 起默认拦截安装脚本，必须加 --allow-scripts，否则二进制不会下载
 npm install -g --allow-scripts=tree-sitter-cli tree-sitter-cli
 
-# 3. 让 cc 命令可用（nvim-treesitter 查找的是 cc，scoop 的 gcc 只提供 gcc.exe）
-Copy-Item "$(scoop prefix gcc)\bin\gcc.exe" "$(scoop prefix gcc)\bin\cc.exe"
-
-# 4. 备份已有配置（如有）
+# 3. 克隆本仓库到配置目录（先备份已有配置）
 Move-Item "$env:LOCALAPPDATA\nvim" "$env:LOCALAPPDATA\nvim.bak" -ErrorAction SilentlyContinue
-
-# 5. 克隆本仓库到配置目录
 git clone https://github.com/WAerWAK/My-Nvim-Config.git "$env:LOCALAPPDATA\nvim"
 
-# 6. 首次启动，等待插件自动下载
+# 4. 运行安装脚本（自动检查依赖、创建 cc 别名、处理备份）
+powershell -ExecutionPolicy Bypass -File "$env:LOCALAPPDATA\nvim\install.ps1"
+
+# 5. 首次启动，等待插件自动下载（约 1-3 分钟）
 nvim
 ```
 
@@ -107,18 +131,21 @@ nvim
 ### Linux / macOS
 
 ```bash
-# 1. 依赖（以 apt 为例，macOS 用 brew）
+# 1. 依赖（Debian/Ubuntu 示例，macOS 用 brew install）
 sudo apt install neovim gcc ripgrep fd-find nodejs npm
 npm install -g --allow-scripts=tree-sitter-cli tree-sitter-cli
 
 # 2. 克隆配置
 git clone https://github.com/WAerWAK/My-Nvim-Config.git ~/.config/nvim
 
-# 3. 首次启动
+# 3. 运行安装脚本
+bash ~/.config/nvim/install.sh
+
+# 4. 首次启动
 nvim
 ```
 
-> Linux 上需安装 Nerd Font，并在终端设置中启用。`clipboard` 依赖 `xclip` 或 `wl-clipboard`。
+> Linux 下 `clipboard` 依赖 `xclip`（X11）或 `wl-clipboard`（Wayland）；`fd` 在部分发行版中命令名为 `fdfind`，需自行建立软链接。
 
 ### 验证安装
 
@@ -135,14 +162,15 @@ nvim
 ```
 .
 ├── init.lua                    # 入口：按顺序加载各模块
-├── lazy-lock.json              # 插件版本锁定（重要，勿随意改写）
+├── lazy-lock.json              # 插件版本锁定（35 条，勿随意改写）
+├── install.ps1 / install.sh     # 一键安装脚本（Windows / Unix）
 ├── lua/
 │   ├── core/                   # 基础配置
 │   │   ├── options.lua         # 编辑器选项（行号、缩进、剪贴板、主题）
 │   │   ├── keymaps.lua         # 自定义快捷键（含中文说明）
 │   │   ├── builtin-keys.lua    # 为 Neovim 内置键位补中文说明
 │   │   └── chinese.lua         # 汉化核心：词汇表 + 消息翻译 + 插件界面 patch
-│   └── plugins/                # 各插件独立配置
+│   └── plugins/                # 各插件独立配置（20 个文件）
 │       ├── plugins-setup.lua   # lazy.nvim 初始化与插件清单（最常改）
 │       ├── lsp.lua             # 语言服务器
 │       ├── cmp.lua             # 补全
@@ -162,12 +190,12 @@ nvim
 │       ├── indent-blankline.lua# 缩进线
 │       ├── notify.lua          # 通知
 │       ├── noice.lua           # 命令行美化
-│       ├── smear-cursor.lua    # 光标动画（当前已禁用，见常见问题）
-│       └── ...
+│       └── smear-cursor.lua    # 光标动画（插件已禁用，文件保留以便恢复）
 ├── scripts/
 │   └── windiag.lua             # 窗口诊断脚本（排查幽灵窗口用）
 └── docs/
-    └── HUAHUANVIM-移植说明.md   # 本配置的来源与移植过程记录
+    ├── 界面预览.png             # 界面截图
+    └── HUAHUANVIM-移植说明.md   # 本配置的来源与移植过程
 ```
 
 ---
@@ -177,19 +205,36 @@ nvim
 ### 编辑器选项（`lua/core/options.lua`）
 
 ```lua
-opt.relativenumber = true    -- 相对行号
-opt.number = true            -- 显示行号
-opt.tabstop = 4              -- Tab 宽度
-opt.shiftwidth = 4           -- 缩进宽度
+local opt = vim.opt
+
+-- 行号
+opt.relativenumber = true    -- 相对行号（便于 j/k 跳转）
+opt.number = true            -- 显示当前行号
+
+-- 缩进
+opt.tabstop = 4              -- Tab 显示宽度
+opt.shiftwidth = 4           -- 自动缩进宽度
 opt.expandtab = false        -- false = 使用真实制表符
+opt.autoindent = true        -- 继承上一行缩进
+
 opt.wrap = false             -- 不自动折行
-opt.clipboard:append("unnamedplus")  -- 与系统剪贴板互通
+opt.cursorline = false       -- 不整行高亮光标行
+opt.mouse:append("a")        -- 启用鼠标
+opt.clipboard:append("unnamedplus")  -- 与系统剪贴板互通（Windows 需 win32yank）
+
+opt.splitright = true        -- 新窗口开在右侧
+opt.splitbelow = true        -- 新窗口开在下方
+
 opt.ignorecase = true        -- 搜索忽略大小写
-opt.smartcase = true         -- 含大写时区分大小写
+opt.smartcase = true         -- 但含大写字母时区分大小写
+
+opt.termguicolors = true     -- 真彩色
+opt.signcolumn = "yes"       -- 常驻符号列（避免文本抖动）
+
 vim.cmd[[colorscheme tokyonight-moon]]  -- 主题
 ```
 
-**可选主题**：`tokyonight`、`tokyonight-moon`、`tokyonight-night`、`tokyonight-storm`、`tokyonight-day`。
+**可选主题**：`tokyonight`、`tokyonight-moon`、`tokyonight-night`、`tokyonight-storm`、`tokyonight-day`
 
 ### 插件清单（`lua/plugins/plugins-setup.lua`）
 
@@ -210,7 +255,7 @@ local plugins = {
 }
 ```
 
-延迟加载字段：
+延迟加载字段（影响启动速度）：
 
 | 字段 | 含义 |
 |------|------|
@@ -218,6 +263,8 @@ local plugins = {
 | `event = "BufReadPre"` | 打开文件前加载 |
 | `ft = { "markdown" }` | 仅在指定文件类型加载 |
 | `cmd = "SomeCommand"` | 仅在使用该命令时加载 |
+
+> 本配置**关闭了自动更新检查**（`checker = { enabled = false }`），避免误触发全量更新，原因见[日常维护](#更新插件重要)。
 
 ### 语言服务器（`lua/plugins/lsp.lua`）
 
@@ -233,38 +280,56 @@ local plugins = {
 | clangd | C / C++ | — |
 | jdtls | Java | Java 21+ |
 
-**新增语言支持**：
+**新增语言支持**（以 Python 为例）：
 
 ```vim
-:MasonInstall pyright        " 1. 安装语言服务器
+" 1. 安装语言服务器
+:MasonInstall pyright
 ```
 
 ```lua
--- 2. 在 lsp.lua 中追加配置（capabilities 变量已在该文件开头定义）
+-- 2. 在 lua/plugins/lsp.lua 中追加配置
+--    capabilities 变量已在该文件开头定义，直接引用
 require'lspconfig'.pyright.setup{
     capabilities = capabilities,
 }
 ```
 
 ```vim
-:TSInstall python            " 3. 安装语法解析器
+" 3. 安装对应语法解析器
+:TSInstall python
 ```
 
 ### 语法解析器（`lua/plugins/treesitter.lua`）
 
-共 20 个：`bash` `c` `c_sharp` `cpp` `css` `java` `javascript` `json` `lua` `markdown` `markdown_inline` `powershell` `python` `rust` `toml` `tsx` `typescript` `vim` `vimdoc` `yaml`
+共 **20 个**：
 
-增删语言时修改文件中的 `parsers` 列表，缺失的会在启动时自动补装。
+```
+bash  c  c_sharp  cpp  css  java  javascript  json  lua  markdown
+markdown_inline  powershell  python  rust  toml  tsx  typescript
+vim  vimdoc  yaml
+```
 
-### 汉化机制（`lua/core/chinese.lua`）
+增删语言时修改文件中的 `parsers` 列表，缺失的会在启动时自动补装（异步，装完重启生效）。
 
-三个部分：
+> **重要**：本配置使用 nvim-treesitter 的 **main 分支**（要求 Neovim 0.12+）。升级该插件后**必须执行 `:TSUpdate`** 重新编译全部解析器，否则新旧 ABI 不匹配。
 
-1. **词汇表** `M.t` —— 统一管理界面用词
-2. **消息翻译** `patterns` —— 正则替换高频系统消息（如 `written` → `已保存`）
-3. **插件界面 patch** `plugin_patches` —— 改写插件源码中的界面文本
+### 界面汉化（`lua/core/chinese.lua`）
 
-新增汉化规则的写法：
+Neovim 本身不含中文语言包，插件界面文本也硬编码在源码中。本配置通过三个部分解决：
+
+| 部分 | 作用 |
+|------|------|
+| `M.t` 词汇表 | 统一管理界面用词，便于批量改词 |
+| `patterns` 消息翻译 | 正则替换高频系统消息（`written` → `已保存`）|
+| `plugin_patches` 界面 patch | 改写插件源码中的界面文本 |
+
+patch 机制的两个关键特性：
+
+- **幂等**：文本已替换则跳过，不会重复处理
+- **抗更新**：插件更新后，下次启动自动重新汉化
+
+新增汉化规则：
 
 ```lua
 {
@@ -275,7 +340,9 @@ require'lspconfig'.pyright.setup{
 },
 ```
 
-> **注意**：`patch` 只替换界面提示文本（`desc` / `title` / `prompt`），**不要**替换逻辑用的字符串。
+> **注意**：`plugin_patches` 只应替换界面提示文本（`desc` / `title` / `prompt`），**不要**替换逻辑用的字符串。
+>
+> **已知限制**：极少数键位的说明无法在不破坏功能的前提下汉化 —— 例如 Comment.nvim 的部分映射是 Lua 回调型（`rhs` 为 `nil`），重设会导致注释功能失效。这类情况本配置选择保留英文，并在源码注释中说明原因。
 
 ---
 
@@ -283,13 +350,15 @@ require'lspconfig'.pyright.setup{
 
 leader 键为**空格**。按下空格停约 0.3 秒会弹出 which-key 菜单（中文）。
 
+> 提示：在 nvim 中执行 `:map` 可查看全部映射；按 `<空格>` 或 `g`、`<C-w>` 会直接弹出分类菜单。
+
 ### 基础编辑
 
 | 键位 | 模式 | 功能 |
 |------|------|------|
 | `jk` | 插入 | 退出插入模式 |
 | `:w` / `:wq` / `:q!` | 普通 | 保存 / 保存退出 / 强制退出 |
-| `J` / `K` | 可视 | 选中内容下移 / 上移 |
+| `J` / `K` | 可视 | 选中内容下移 / 上移（保持选中）|
 | `gc` / `gcc` | 可视 / 普通 | 注释选中行 / 注释当前行 |
 | `gb` / `gbc` | 可视 / 普通 | 块注释 / 注释当前块 |
 
@@ -299,9 +368,12 @@ leader 键为**空格**。按下空格停约 0.3 秒会弹出 which-key 菜单�
 |------|------|
 | `<空格>sv` / `<空格>sh` | 垂直 / 水平分屏 |
 | `<空格>sc` | 关闭当前窗口 |
-| `Ctrl+h/j/k/l` | 跳到左 / 下 / 上 / 右窗口 |
+| `Ctrl+h/j/k/l` | 跳到左 / 下 / 上 / 右窗口（由 vim-tmux-navigator 提供）|
+| `<C-w>h/j/k/l` | 同上（Neovim 原生方式）|
+| `<C-w>w` / `<C-w>W` | 在窗口间循环切换 / 反向循环 |
 | `<C-w>s` / `<C-w>v` | 水平 / 垂直分屏 |
 | `<C-w>c` / `<C-w>o` | 关闭当前窗口 / 只保留当前窗口 |
+| `<C-w>q` | 退出当前窗口 |
 | `<C-w>=` | 所有窗口等宽等高 |
 | `<C-w>+` / `<C-w>-` | 增加 / 减少高度 |
 | `<C-w>>` / `<C-w><` | 增加 / 减少宽度 |
@@ -310,40 +382,50 @@ leader 键为**空格**。按下空格停约 0.3 秒会弹出 which-key 菜单�
 | `Shift+L` / `Shift+H` | 下一个 / 上一个缓冲区 |
 | `<空格>x` | 关闭当前缓冲区 |
 
+> `Ctrl+h/j/k/l` 由 `vim-tmux-navigator` 注册。**没有 tmux 时行为与 `<C-w>h/j/k/l` 相同**；若在 tmux 内运行，它会自动把边界处的按键透传给 tmux 用于切换面板。
+
 ### 查找与浏览
 
 | 键位 | 功能 |
 |------|------|
-| `<空格>ff` | 查找文件 |
+| `<空格>ff` | 查找文件（Telescope）|
 | `<空格>fr` | 最近打开的文件 |
-| `<空格>fg` | 全局搜索内容 |
-| `<空格>fb` | 缓冲区列表 |
+| `<空格>fg` | 全局搜索内容（需 ripgrep）|
+| `<空格>fb` | 切换缓冲区列表 |
 | `<空格>fh` | 搜索帮助文档 |
-| `<空格>e` | 开关文件树 |
-| `<空格>a` | 开关代码大纲 |
+| `<空格>e` | 开关文件树（nvim-tree）|
+| `<空格>a` | 开关代码大纲（aerial）|
 | `<空格>nh` | 取消搜索高亮 |
 
 ### 代码导航（LSP）
+
+> 下表键位**均为 Neovim 内置**，无需本配置注册，但需当前文件已连接 LSP 才有效。
 
 | 键位 | 功能 |
 |------|------|
 | `gd` | 跳转到定义 |
 | `grn` | 重命名符号 |
-| `gra` | 代码操作（快速修复） |
+| `gra` | 代码操作（快速修复）|
 | `grr` | 列出所有引用 |
 | `gri` | 跳转到实现 |
 | `grt` | 跳转到类型定义 |
+| `grx` | 运行代码镜头（Code Lens）|
+| `gO` | 列出当前文件符号 |
 | `]d` / `[d` | 跳到下 / 上一个诊断 |
+| `]D` / `[D` | 跳到最后一个 / 第一个诊断 |
 | `]q` / `[q` | 下 / 上一个 quickfix |
+| `]b` / `[b` | 下 / 上一个缓冲区 |
+| `]t` / `[t` | 下 / 上一个标签页 |
 
 ### 其他
 
 | 键位 | 功能 |
 |------|------|
-| `gg` / `ge` / `gf` | 文件开头 / 上一个词尾 / 打开光标下的文件 |
-| `<空格>ll` / `<空格>lm` | 打开插件管理 / LSP 工具管理 |
-| `Alt+p` | 开关浮动终端 |
-| `<空格>mt` | 开关 Markdown 渲染 |
+| `gg` / `ge` / `gf` | 跳到文件开头 / 上一个词尾 / 打开光标下的文件 |
+| `gx` | 用系统程序打开光标下的文件或链接 |
+| `<空格>ll` / `<空格>lm` | 打开插件管理（lazy）/ LSP 工具管理（mason）|
+| `Alt+p` | 开关浮动终端（toggleterm）|
+| `<空格>mt` | 开关 Markdown 渲染（默认开启）|
 
 ---
 
@@ -351,12 +433,12 @@ leader 键为**空格**。按下空格停约 0.3 秒会弹出 which-key 菜单�
 
 ### 更新插件（重要）
 
-本配置**刻意关闭了自动更新检查**，原因是全量更新会把 `nvim-lspconfig` 等升级到新版 API，导致 `lsp.lua` 的写法失效。
+本配置**刻意关闭了自动更新检查**，原因是全量更新会把 `nvim-lspconfig` 等升级到新版 API，导致 `lsp.lua` 的既有写法失效。
 
 **推荐做法**：只按需更新单个插件。
 
 ```vim
-:Lazy                    " 打开界面，光标移到插件后按 U 升级它
+:Lazy                    " 打开界面，光标移到目标插件后按 U 升级它
 :Lazy update 插件名       " 或命令行方式
 ```
 
@@ -372,12 +454,12 @@ leader 键为**空格**。按下空格停约 0.3 秒会弹出 which-key 菜单�
 
 | 内容 | 路径 | 是否需要备份 |
 |------|------|--------------|
-| 配置 | `%LOCALAPPDATA%\nvim`（本仓库）| ✅ 核心，仅 50 KB |
+| **配置** | `%LOCALAPPDATA%\nvim`（Windows）/ `~/.config/nvim`（Unix）| ✅ **核心，本仓库即是** |
 | 插件本体 | `nvim-data\lazy\` | ❌ 可自动重新下载 |
 | LSP 服务器 | `nvim-data\mason\` | ❌ 可自动重新安装 |
 | 历史记录 | `nvim-data\shada\` | ❌ 无必要 |
 
-**迁移到新机器**：按[快速开始](#快速开始)执行即可，插件会依据 `lazy-lock.json` 自动还原到完全相同的版本。
+**迁移到新机器**：按[快速开始](#快速开始)执行即可，插件会依据 `lazy-lock.json` 自动还原到**完全相同的版本**。
 
 ### 卸载
 
@@ -386,7 +468,7 @@ leader 键为**空格**。按下空格停约 0.3 秒会弹出 which-key 菜单�
 scoop uninstall neovim
 
 # 2. 删除配置与数据
-#    %LOCALAPPDATA%\nvim        （即本仓库）
+#    %LOCALAPPDATA%\nvim        （配置，即本仓库）
 #    %LOCALAPPDATA%\nvim-data   （插件、LSP、历史记录，约 150 MB+）
 ```
 
@@ -404,9 +486,11 @@ scoop uninstall neovim
 :luafile ~/windiag.lua
 ```
 
-**原因**：`smear-cursor`（光标拖尾动画）失控，每帧创建一个辅助窗口却未回收，实测堆积 23~35 个。已升级到上游最新版仍无效，故**本配置已禁用它**（`plugins-setup.lua` 中该行已注释）。
+**原因**：`smear-cursor`（光标拖尾动画）失控，每帧创建一个辅助窗口却未回收，实测堆积 23~35 个 `ft=smear-cursor`、高度 1 行的幽灵窗口。
 
-**如需恢复**：取消该行注释。它只提供视觉效果，禁用无功能损失。
+**本配置的处理**：升级到上游最新版仍无效，故**已禁用该插件**（`plugins-setup.lua` 中该行已注释）。
+
+**如需恢复**：取消该行注释，并恢复 `lua/plugins/smear-cursor.lua` 的 setup 调用。它只提供视觉效果，禁用无功能损失。
 
 ### Q2：打开 Markdown 报 `attempt to call method 'range' (a nil value)`？
 
@@ -417,7 +501,7 @@ git -C $env:LOCALAPPDATA\nvim-data\lazy\nvim-treesitter rev-parse --abbrev-ref H
 # 应输出 main
 ```
 
-切换分支后必须执行 `:TSUpdate` 重新编译全部解析器。
+切换分支后**必须执行 `:TSUpdate`** 重新编译全部解析器。
 
 ### Q3：解析器编译失败，报 `ENOENT: 'tree-sitter'`？
 
@@ -427,7 +511,7 @@ git -C $env:LOCALAPPDATA\nvim-data\lazy\nvim-treesitter rev-parse --abbrev-ref H
 npm install -g --allow-scripts=tree-sitter-cli tree-sitter-cli
 ```
 
-注意 `--allow-scripts` 不能省 —— npm 11 起默认拦截依赖的安装脚本，不加则二进制不会下载。
+`--allow-scripts` **不能省** —— npm 11 起默认拦截依赖的安装脚本，不加则二进制不会下载，装完命令仍不可用。
 
 ### Q4：复制粘贴报错？
 
@@ -436,6 +520,8 @@ npm install -g --allow-scripts=tree-sitter-cli tree-sitter-cli
 ```powershell
 scoop install win32yank
 ```
+
+Linux 下需安装 `xclip`（X11）或 `wl-clipboard`（Wayland）。
 
 ### Q5：不小心执行了全量更新，配置报错？
 
@@ -451,7 +537,7 @@ scoop install win32yank
 
 ### Q7：Java 的 LSP 起不来？
 
-jdtls 需要 **Java 21+**。检查：
+jdtls 需要 **Java 21+**：
 
 ```powershell
 java -version
@@ -459,20 +545,31 @@ java -version
 
 ### Q8：插件界面又变回英文了？
 
-说明该插件更新后源码文本有变动，导致汉化规则失配。查看启动通知里提示的文件，在 `lua/core/chinese.lua` 的 `plugin_patches` 中按新文本更新对应规则即可。
+说明该插件更新后源码文本有变动，导致汉化规则失配。启动时若有替换失败项会通过通知提示具体文件，在 `lua/core/chinese.lua` 的 `plugin_patches` 中按新文本更新对应规则即可。
 
-### Q9：想让 `gc`/`gcc`/`gb` 的说明变中文？
+### Q9：`gc`/`gcc`/`gb` 的说明怎么变成中文的？
 
-已汉化。做法是**直接改 Comment.nvim 源码里的 `desc` 字符串**（由 patch 机制自动完成）—— 注意**不要**在 `keymaps.lua` 里重设这些键位：它们是 Lua 回调型映射（`rhs` 为 `nil`），重设会导致注释功能失效。
+做法是**直接汉化 Comment.nvim 源码里的 `desc` 字符串**（由 patch 机制自动完成）。
+
+**注意**：不要试图在 `keymaps.lua` 里重设这些键位 —— 它们是 Lua 回调型映射（`rhs` 为 `nil`），重设会导致注释功能失效。
 
 ### Q10：修改配置后没生效？
 
 ```vim
-:source $MYVIMRC       " 重载配置（部分插件需重启）
+:source $MYVIMRC       " 重载配置（部分插件需重启才生效）
 :Lazy reload 插件名     " 重载指定插件
 ```
 
 最稳妥的方式是重启 nvim。
+
+### Q11：启动变慢了怎么排查？
+
+```vim
+:Lazy profile          " 查看各插件加载耗时
+:checkhealth           " 检查异常
+```
+
+启动耗时也会显示在启动页上，正常约 300 ms 以内。本配置已关闭联网检查更新，这也是启动速度的保证之一。
 
 ---
 
@@ -485,7 +582,7 @@ java -version
 - 从 [HUAHUANVIM](https://github.com/huahuaid/HUAHUANVIM) 的 One~Six 六分支合并移植（详见 `docs/`）
 - 修复上游 7 处 bug：`capabilities` 未定义、`css_ls` 名称错误、`clangd` 硬编码路径、dashboard 依赖缺失、`rainbow-delimiters` 与 nvim 0.12 不兼容等
 - Windows 与 Neovim 0.12 适配：gcc 编译器、`cc` 别名、`win32yank` 剪贴板、`vim.uv` API
-- nvim-treesitter 升级到 **main 分支**（适配 Neovim 0.12），20 个解析器
+- nvim-treesitter 升级到 **main 分支**（适配 Neovim 0.12），配置 20 个解析器
 - 界面汉化：启动页、`:Lazy`、`:Mason`（含帮助页）、Telescope、nvim-tree、Comment 键位
 - 内置键位汉化：`<C-w>` 窗口系列 18 个 + `g` 系列 3 个
 - 精简 mason 包：48 个（2.1 GB）→ 9 个（416 MB）
