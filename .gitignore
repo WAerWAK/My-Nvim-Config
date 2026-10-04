@@ -19,6 +19,11 @@ undodir/
 lua/local.lua
 local.lua
 
+# 本机同步脚本（内含本机路径，对其他使用者无意义，故不上传）
+# 换机器后如需使用，可从原机器复制或按 README 中的命令手动同步
+sync.ps1
+sync.sh
+
 # ===== 编辑器 / 系统文件 =====
 .vscode/
 .idea/
