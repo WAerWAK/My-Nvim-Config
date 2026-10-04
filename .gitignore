@@ -1,0 +1,33 @@
+# ===== Neovim 运行时产生的文件（不应纳入版本控制）=====
+# 插件本体（由 lazy.nvim 依据 lazy-lock.json 自动下载）
+lazy-lock.json.bak
+# 会话 / 历史
+*.shada
+shada/
+sessions/
+# 交换文件
+*.swp
+*.swo
+*.swn
+swap/
+# 撤销历史
+undo/
+undodir/
+# 日志
+*.log
+# 本地覆盖配置（个人机器专用，不应上传）
+lua/local.lua
+local.lua
+
+# ===== 编辑器 / 系统文件 =====
+.vscode/
+.idea/
+*.code-workspace
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== 临时文件 =====
+*.tmp
+*.bak
+*~

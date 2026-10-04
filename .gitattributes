@@ -1,0 +1,30 @@
+# 统一换行符处理，避免跨平台协作时大量无意义 diff
+* text=auto
+
+# Lua 源码：统一 LF
+*.lua text eol=lf
+
+# Shell 脚本：必须 LF（否则 Linux 下无法执行）
+*.sh text eol=lf
+
+# PowerShell 脚本：Windows 习惯 CRLF
+*.ps1 text eol=crlf
+*.psm1 text eol=crlf
+
+# Markdown / JSON / 配置文件
+*.md text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+LICENSE text eol=lf
+
+# 二进制文件不做转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
