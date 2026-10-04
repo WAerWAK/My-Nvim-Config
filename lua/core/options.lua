@@ -1,6 +1,6 @@
 local opt = vim.opt
 
--- 行号
+-- 行号（相对行号便于用计数跳转：5j 下移 5 行、12k 上移 12 行、d3j 删除含当前行 4 行）
 opt.relativenumber = true
 opt.number = true
 
