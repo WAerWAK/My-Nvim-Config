@@ -1,13 +1,13 @@
 # My-Nvim-Config
 
-[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-0078D4)](#环境要求)
-[![Neovim](https://img.shields.io/badge/Neovim-0.12%2B-57A143?logo=neovim&logoColor=white)](#环境要求)
-[![lazy.nvim](https://img.shields.io/badge/plugin%20manager-lazy.nvim-2C3E50)](#插件清单)
-[![Shell](https://img.shields.io/badge/shell-PowerShell%207-5391FE)](#环境要求)
-[![Terminal](https://img.shields.io/badge/terminal-WezTerm%20nightly-4E49EE)](#界面预览)
-[![Prompt](https://img.shields.io/badge/prompt-Oh%20My%20Posh-3B82F6)](#界面预览)
-[![Localization](https://img.shields.io/badge/UI-%E4%B8%AD%E6%96%87%E6%B1%89%E5%8C%96-E67E22)](#界面汉化)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-0078D4)
+![Neovim](https://img.shields.io/badge/Neovim-0.12%2B-57A143?logo=neovim&logoColor=white)
+![lazy.nvim](https://img.shields.io/badge/plugin%20manager-lazy.nvim-2C3E50)
+![Shell](https://img.shields.io/badge/shell-PowerShell%207-5391FE)
+![Terminal](https://img.shields.io/badge/terminal-WezTerm%20nightly-4E49EE)
+![Prompt](https://img.shields.io/badge/prompt-Oh%20My%20Posh-3B82F6)
+![Localization](https://img.shields.io/badge/UI-%E4%B8%AD%E6%96%87%E6%B1%89%E5%8C%96-E67E22)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 一套可直接使用的 **Neovim 完整配置**，基于 lazy.nvim 搭建，开箱即用。
 
@@ -208,7 +208,7 @@ nvim
 local opt = vim.opt
 
 -- 行号
-opt.relativenumber = true    -- 相对行号（便于 j/k 跳转）
+opt.relativenumber = true    -- 相对行号（配合计数跳转，如 5j 下移 5 行）
 opt.number = true            -- 显示当前行号
 
 -- 缩进
@@ -570,6 +570,27 @@ java -version
 ```
 
 启动耗时也会显示在启动页上，正常约 300 ms 以内。本配置已关闭联网检查更新，这也是启动速度的保证之一。
+
+### Q12：关掉一个文件时 nvim 一起退出了，怎么只关文件？
+
+`:q` 关闭的是**窗口**，而只剩一个窗口时 nvim 就会随之退出。想"关闭文件但留在 nvim 里"应该操作**缓冲区**：
+
+| 命令 / 键位 | 效果 |
+|-------------|------|
+| `:bd` | **关闭当前文件，nvim 不退出**（推荐）|
+| `<空格>x` | 同上（本配置已绑定）|
+| `:bnext` / `:bprev` | 切到下一个 / 上一个文件 |
+| `Shift+L` / `Shift+H` | 同上（本配置已绑定）|
+| `:e 文件名` | 在当前窗口打开另一个文件 |
+| `:q` | 关闭当前**窗口**，最后一个窗口时退出 nvim |
+| `:qa` | 退出所有窗口（即退出 nvim）|
+| `:qa!` | 强制退出 nvim，不保存 |
+
+**已经用 `:q` 退出了怎么办？** 没有损失 —— 文件仍在磁盘上（前提是保存过）。重开 nvim 后用 `<空格>fr`（最近打开的文件）就能快速找回。
+
+> **容易混淆的一点**：Vim/Neovim 中"窗口 / 缓冲区 / 标签页"是三个不同概念 ——
+> **缓冲区**是打开的文件，**窗口**是它的显示区域，**标签页**是一组窗口的集合。
+> 编辑多个文件推荐用**缓冲区**（`:bd` 关闭、`Shift+L/H` 切换），而不是开一堆窗口。
 
 ---
 
