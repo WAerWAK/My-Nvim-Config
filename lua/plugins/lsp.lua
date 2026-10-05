@@ -24,19 +24,6 @@ if cmp_ok then
 	capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
 end
 
--- ⚠️ 禁用 LSP 的文件监控（workspace/didChangeWatchedFiles）
---
--- 原因：Neovim 0.12 的 vim/_watch.lua 实现会为「被监控目录树下的每一个子目录」
---       各创建一个 fs_event 句柄（见 watchdirs 中的 for 循环 + uv.new_fs_event）。
---       若在用户主目录这类超大目录（数十万文件、数千子目录）中启动，
---       会瞬间创建上千个 fs_event；清空回收站、批量删除文件等操作会引发
---       事件风暴，句柄与内存持续累积（实测涨到 7GB+），且不会释放。
---
--- 代价：失去「文件被外部程序修改时自动通知 LSP」的能力。
---       对日常编辑、补全、诊断、跳转均无影响（保存时仍会正常同步）。
-capabilities.workspace = capabilities.workspace or {}
-capabilities.workspace.didChangeWatchedFiles = { dynamicRegistration = false }
-
 -- Lua / Neovim 配置
 require'lspconfig'.lua_ls.setup{
 	capabilities = capabilities,
