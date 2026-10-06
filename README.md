@@ -1,5 +1,9 @@
 # My-Nvim-Config
 
+> 一套可直接使用的 **Neovim 完整配置**，基于 lazy.nvim 搭建，开箱即用。
+>
+> 它不只是插件列表 —— 还包含 **Windows / Neovim 0.12 环境适配**、**界面中文化**、**版本锁定** 与 **一键安装脚本**，让你跳过反复试错，几分钟内得到一套稳定的编辑环境。
+
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-0078D4)
 ![Neovim](https://img.shields.io/badge/Neovim-0.12%2B-57A143?logo=neovim&logoColor=white)
 ![lazy.nvim](https://img.shields.io/badge/plugin%20manager-lazy.nvim-2C3E50)
@@ -9,9 +13,12 @@
 ![Localization](https://img.shields.io/badge/UI-%E4%B8%AD%E6%96%87%E6%B1%89%E5%8C%96-E67E22)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-一套可直接使用的 **Neovim 完整配置**，基于 lazy.nvim 搭建，开箱即用。
-
-它不只是插件列表 —— 还包含 **Windows / Neovim 0.12 环境适配**、**界面中文化**、**版本锁定** 与 **一键安装脚本**，让你跳过反复试错，几分钟内得到一套稳定的编辑环境。
+<p align="center">
+  本仓库配置由 <a url="https://github.com/huahuaid/HUAHUANVIM">huahuaid/HUAHUANVIM</a> 使用 DeepSeek V4.1 Flash 修改而来
+</p>
+<p align="center">
+	可能存在未知问题，介意勿用
+</p>
 
 ---
 
