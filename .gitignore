@@ -15,6 +15,12 @@ undo/
 undodir/
 # 日志
 *.log
+
+# 帮助索引（由 :helptags / :I18nHelpTags 在本地生成，随环境变化，不纳入版本控制）
+# 说明：doc/*.txt 帮助正文是要提交的；只有索引文件忽略
+doc/tags
+doc/tags-*
+doc/tags-cn
 # 本地覆盖配置（个人机器专用，不应上传）
 lua/local.lua
 local.lua

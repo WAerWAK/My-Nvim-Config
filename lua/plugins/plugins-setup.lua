@@ -54,6 +54,10 @@ local plugins = {
 
 
 	-- New
+	-- 注：noice 的配置在 plugins/noice.lua 里通过 noice.setup() 应用；
+	--     不要在 lazy 的 config 回调里 require 那个模块 —— 会与 init.lua
+	--     的 require 链形成循环加载（实测报
+	--     "loop or previous error loading module 'plugins.noice'"）。
 	{ "folke/noice.nvim",event = "VeryLazy",
 		dependencies = { "MunifTanjim/nui.nvim", "rcarriga/nvim-notify" }
 	},

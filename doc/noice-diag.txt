@@ -1,0 +1,36 @@
+*noice 诊断*                                              *i18n-noice-diag*
+
+`:w` 不显示「已保存」时，重启 nvim 后执行下面这条命令，把输出整段发我。
+
+> 命令（整行复制到命令行执行，注意是一整行）：
+
+  :lua local o=require("noice.config").options; print("running="..tostring(require("noice.config").is_running())); print("messages.enabled="..tostring(o.messages and o.messages.enabled)); print("messages.view="..tostring(o.messages and o.messages.view)); local n=0; for _,r in ipairs(o.routes or {}) do if r.filter and r.filter.find then n=n+1; print(("  find=%-22s view=%-10s skip=%s"):format(tostring(r.filter.find),tostring(r.view),tostring(r.opts and r.opts.skip))) end end; print("带 find 的路由数="..n.."  router._routes="..#require("noice.message.router")._routes)
+
+怎么读结果：
+
+1. `running=false`
+   → noice 的 `setup()` 没跑起来（时机问题），我换注入方式。
+
+2. `running=true` 且 `带 find 的路由数=0`
+   → noice 在跑，但**我的 4 条路由没被注册**（`apply()` 没生效）。
+
+3. `带 find 的路由数=4`
+   → 配置生效了，问题在视图/渲染层：
+     请再看 `messages.enabled` 是否为 true、`messages.view` 是什么。
+
+4. 如果 `messages.enabled=false`
+   → noice 的消息 UI 被关了，`:w` 的提示自然不显示。
+
+---
+
+## 另外两个可交叉验证的命令
+
+`:Noice` ~
+  打开 noice 自己的消息历史（已汉化为「筛选消息」）。如果里面有 `written` 记录，
+  说明消息被 noice 收到了，只是没渲染到可见位置。
+
+`:messages` ~
+  看 nvim 原生消息历史。若这里也没有 `written`，说明消息被 noice 拦走了；
+  若有英文 `written`，说明汉化链路没接到（那是翻译层的问题）。
+
+vim:tw=78:ts=8:noet:ft=help:norl:

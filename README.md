@@ -50,14 +50,15 @@
 | 语法高亮 | nvim-treesitter（**main 分支**） | **20 个语言**解析器，含 Java / PowerShell / C# |
 | 代码补全 | nvim-cmp + LuaSnip | LSP、代码片段、文件路径、缓冲区多源补全 |
 | 语言服务器 | mason + nvim-lspconfig | **7 个 LSP**：Lua、TypeScript、CSS、Vue、HTML、C/C++、Java |
-| 文件查找 | Telescope | 标题已汉化，覆盖 35 个 picker |
-| 文件树 / 大纲 | nvim-tree / aerial | 快捷键 `<空格>e` / `<空格>a` |
+| 文件查找 | Telescope | 标题已汉化，覆盖 51 个 picker（含 `<C-/>` 键位表） |
+| 文件树 / 大纲 | nvim-tree / aerial | 快捷键 `<空格>e` / `<空格>a`，键位提示已汉化 |
 | 状态栏 | lualine | 中文化标记 |
-| Git | gitsigns | 左侧改动标记 |
+| Git | gitsigns | 左侧改动标记，操作提示已汉化 |
 | Markdown | render-markdown | 打开即渲染（标题放大、表格画框）|
 | 内置终端 | toggleterm | `Alt+p` 浮动终端 |
-| **界面汉化** | 自研补丁机制 | 启动页、Lazy、Mason、Telescope、键位提示 |
-| **内置键位汉化** | 自研映射 | `<C-w>` 窗口系列 18 个 + `g` 系列 3 个 |
+| **界面汉化** | 自研 i18n 引擎 | **115 组 / 924 条**规则 + 266 条消息正则 |
+| **checkhealth 汉化** | 补丁 + 模块覆盖 | 插件 63 条 + 本体 208 条（不改 nvim 安装目录） |
+| **键位菜单汉化** | 补丁 + 映射 | `<空格>` / `g` / `z` / `<C-w>` / 操作符 / 文本对象全中文 |
 
 ### 为什么选这套，而不是从零配置
 
@@ -71,7 +72,7 @@
 | LSP 配置变量未定义 | 补全能力为 `nil`，LSP 形同虚设 | 已修复上游 7 处 bug |
 | npm 11 拦截安装脚本 | tree-sitter CLI 装了但不可用 | 文档强调 `--allow-scripts` 参数 |
 | 全量更新打断配置 | `:Lazy update` 后 `lsp.lua` 报错 | 关闭自动检查 + 提供 `:Lazy restore` 回退 |
-| 插件界面全英文 | 看不懂菜单 | 自研 patch 机制汉化，且**抗插件更新** |
+| 插件界面全英文 | 看不懂菜单 | 自研 i18n 引擎汉化（**115 组 / 924 条**规则），含语法校验与失败回滚 |
 
 ---
 
@@ -166,16 +167,23 @@ nvim
 ├── install.ps1 / install.sh     # 一键安装脚本（Windows / Unix）
 ├── lua/
 │   ├── core/                   # 基础配置
-│   │   ├── options.lua         # 编辑器选项（行号、缩进、剪贴板、主题）
+│   │   ├── options.lua         # 编辑器选项（行号、缩进、剪贴板、主题、helplang）
 │   │   ├── keymaps.lua         # 自定义快捷键（含中文说明）
 │   │   ├── builtin-keys.lua    # 为 Neovim 内置键位补中文说明
-│   │   └── chinese.lua         # 汉化核心：词汇表 + 消息翻译 + 插件界面 patch
+│   │   ├── chinese.lua         # 汉化入口：消息翻译 + notify/echo 钩子 + 启动时 patch
+│   │   └── i18n/               # 汉化引擎（详见「界面汉化」一节）
+│   │       ├── init.lua        #   执行引擎（替换 + 语法校验 + 审计）
+│   │       ├── words.lua       #   统一词汇表
+│   │       ├── messages.lua    #   系统消息正则（266 条）
+│   │       ├── health.lua      #   checkhealth 本体模块覆盖部署
+│   │       ├── helpdoc.lua     #   中文帮助索引生成
+│   │       └── patches/        #   按插件分组的界面文本规则（18 个文件）
 │   └── plugins/                # 各插件独立配置（20 个文件）
 │       ├── plugins-setup.lua   # lazy.nvim 初始化与插件清单（最常改）
 │       ├── lsp.lua             # 语言服务器
 │       ├── cmp.lua             # 补全
 │       ├── treesitter.lua      # 语法高亮
-│       ├── telescope.lua       # 文件查找（标题汉化）
+│       ├── telescope.lua       # 文件查找（51 个 picker 标题汉化）
 │       ├── which-key.lua       # 键位提示菜单
 │       ├── dashboard.lua       # 启动页（含主题文本自动汉化）
 │       ├── lualine.lua         # 状态栏
@@ -189,10 +197,15 @@ nvim
 │       ├── autopairs.lua       # 括号配对
 │       ├── indent-blankline.lua# 缩进线
 │       ├── notify.lua          # 通知
-│       ├── noice.lua           # 命令行美化
+│       ├── noice.lua           # 命令行美化（消息路由 / 视图配置）
 │       └── smear-cursor.lua    # 光标动画（插件已禁用，文件保留以便恢复）
+├── doc/
+│   ├── nvim-cn.txt             # 中文帮助页（:help nvim-cn）
+│   └── noice-diag.txt          # noice 消息显示排查步骤（:help i18n-noice-diag）
 ├── scripts/
-│   └── windiag.lua             # 窗口诊断脚本（排查幽灵窗口用）
+│   ├── windiag.lua             # 窗口诊断脚本（排查幽灵窗口用）
+│   ├── health-core/            # checkhealth 本体中文模块（启动时部署到配置目录）
+│   └── i18n-*.lua              # 汉化维护工具（审计 / 消息自检 / 命令与映射清单）
 └── docs/
     ├── 界面预览.png             # 界面截图
     └── HUAHUANVIM-移植说明.md   # 本配置的来源与移植过程
@@ -314,35 +327,115 @@ vim  vimdoc  yaml
 
 > **重要**：本配置使用 nvim-treesitter 的 **main 分支**（要求 Neovim 0.12+）。升级该插件后**必须执行 `:TSUpdate`** 重新编译全部解析器，否则新旧 ABI 不匹配。
 
-### 界面汉化（`lua/core/chinese.lua`）
+### 界面汉化（`lua/core/i18n/`）
 
-Neovim 本身不含中文语言包，插件界面文本也硬编码在源码中。本配置通过三个部分解决：
+Neovim 本身不含中文语言包（官方 Windows 构建连 `libintl` 都没链接，放 `.mo` 也不生效），
+插件界面文本也全部硬编码在源码里。本配置通过一套自研机制解决，共 **115 组规则 / 924 条替换**，
+外加 **266 条系统消息正则**。
 
-| 部分 | 作用 |
-|------|------|
-| `M.t` 词汇表 | 统一管理界面用词，便于批量改词 |
-| `patterns` 消息翻译 | 正则替换高频系统消息（`written` → `已保存`）|
-| `plugin_patches` 界面 patch | 改写插件源码中的界面文本 |
+#### 模块结构
 
-patch 机制的两个关键特性：
-
-- **幂等**：文本已替换则跳过，不会重复处理
-- **抗更新**：插件更新后，下次启动自动重新汉化
-
-新增汉化规则：
-
-```lua
-{
-    path = "插件名/lua/路径/文件.lua",
-    replacements = {
-        { [[原文]], [[译文]] },
-    },
-},
+```
+lua/core/i18n/
+├── init.lua               执行引擎：识字规则、替换、语法校验、审计
+├── words.lua              统一词汇表（改词只改这里）
+├── messages.lua           系统消息正则翻译（266 条）
+├── health.lua             checkhealth 本体模块的覆盖部署
+├── helpdoc.lua            中文帮助索引（doc/tags-cn）生成
+└── patches/               按插件分组的界面文本规则
+    ├── init.lua           汇总表（含"引号变体"自动展开）
+    ├── compat.lua         ⚠️ 非汉化：第三方兼容性修复（务必保留）
+    ├── lazy.lua  mason.lua  telescope*.lua  nvim-tree*.lua
+    ├── which-key.lua  aerial*.lua  gitsigns*.lua  noice*.lua
+    ├── health.lua  health-extra.lua  health-extra2.lua
+    └── small*.lua  lsp-cmds.lua  treesitter.lua  final.lua  misc.lua
 ```
 
-> **注意**：`plugin_patches` 只应替换界面提示文本（`desc` / `title` / `prompt`），**不要**替换逻辑用的字符串。
+#### 三条技术路径（按安全性排序）
+
+| 方式 | 适用场景 | 例子 |
+|------|----------|------|
+| ① **配置覆盖** | 插件把文本做成可配置项时首选 | Telescope 的 `pickers.*.prompt_title`、nvim-tree 的 `mappings` |
+| ② **补 desc** | 键位说明类（原映射非回调型时安全） | `core/builtin-keys.lua`、`core/keymaps.lua` |
+| ③ **改写源码** | 插件硬编码文本时唯一可行（本配置主力） | Lazy / Mason / nvim-tree / which-key 的界面文案 |
+
+#### 引擎的安全设计（都是踩坑后加的）
+
+| 机制 | 作用 |
+|------|------|
+| **语法校验 + 自动放弃** | 替换后先用 `load()` 校验 Lua 语法，不通过就整份放弃改写并记日志 —— 杜绝"汉化把插件改坏导致 nvim 崩" |
+| **幂等** | 源码里找不到原文就跳过，反复启动不会重复替换 |
+| **二进制读写** | 不改动文件行尾（CRLF 保持 CRLF） |
+| **长度降序执行** | 避免 `opts("Open")` 抢在 `opts("Open Preview")` 前导致失配 |
+| **引号变体自动展开** | 规则写 `'foo'`，引擎自动补 `"foo"` 版本，不用手动对齐引号风格 |
+| **失败日志** | 改写记录写入 `stdpath("state")/i18n.log` |
+
+#### 新增一条汉化
+
+```lua
+-- lua/core/i18n/patches/<插件>.lua
+return {
+  rules = {
+    {
+      path = "插件名/lua/路径/文件.lua",
+      note = "用途说明",
+      replacements = {
+        { [[英文原文]], [[中文译文]] },
+      },
+    },
+  },
+}
+```
+
+> ⚠️ 只替换**显示用**文本（`desc` / `title` / `prompt` / 消息串）。
+> 键名、命令名、正则、参与逻辑判断的常量一律不动。
+> **判断方法**：这个字符串会不会被回传给插件做判断？会 → 不能动。
 >
-> **已知限制**：极少数键位的说明无法在不破坏功能的前提下汉化 —— 例如 Comment.nvim 的部分映射是 Lua 回调型（`rhs` 为 `nil`），重设会导致注释功能失效。这类情况本配置选择保留英文，并在源码注释中说明原因。
+> ⚠️ 规则必须带**引号边界**（`'文本'` 而非裸文本）。
+> 我们踩过这个坑：早期用裸文本替换，把 `state.validate()` 里的 `valid` 也换成中文，
+> 直接把 render-markdown 的 health.lua 改成了非法 Lua。
+
+#### 自查命令
+
+| 命令 | 作用 |
+|------|------|
+| `:I18nPatch` | 立即执行汉化（正常显示"改写 0 个文件"） |
+| `:I18nRules` | 列出全部规则与目标文件（`!!` 表示目标不存在） |
+| `:I18nAudit` | 扫描插件里剩余的英文界面文本 |
+| `:I18nHelpTags` | 重建中文帮助索引 |
+| `:help nvim-cn` | 中文帮助页（入门 / 键位 / 汉化说明） |
+| `:help i18n-noice-diag` | noice 消息显示问题的排查步骤 |
+
+配套脚本（`scripts/`）：`i18n-audit.lua`、`i18n-test-messages.lua`、
+`i18n-cmd-desc.lua`、`i18n-export-maps.lua`、`i18n-msg-list.lua`。
+
+#### 汉化覆盖面
+
+| 范围 | 内容 |
+|------|------|
+| 界面规则 | **115 组 / 924 条**，覆盖 lazy、Mason、Telescope、nvim-tree、which-key、aerial、gitsigns、noice、notify、toggleterm、render-markdown、treesitter、LuaSnip、nvim-autopairs 等 |
+| 系统消息 | **266 条**正则（含官方 `errors.h` 全部 191 条消息） |
+| 键位菜单 | `<空格>` / `g` / `z` / `<C-w>` / 操作符 / 文本对象全中文；Telescope 内按 `<C-/>` 的键位表也中文 |
+| checkhealth | 插件 63 条 + 本体 208 条（本体用"配置目录同名模块覆盖"实现，**不改 nvim 安装目录**） |
+| 中文帮助 | `doc/nvim-cn.txt`（入门 / 键位速查 / 汉化说明）+ `'helplang' = cn,en` |
+| 中文教程 | 直接 `:Tutor zh/vim-01-beginner`（nvim 官方自带） |
+
+#### 有意保留英文的部分
+
+| 项目 | 原因 |
+|------|------|
+| nvim 本体错误消息**整体**切换 | 消息写死在编译期；官方 Windows 构建未链接 `libintl`（实测 `nvim.exe` 里 `libintl`/`bindtextdomain`/`nvim.mo` 出现次数均为 0），放 `.mo` 无效。只能靠 266 条正则逐条翻 |
+| 含 `%s`/`%d` 的动态串 | 改了要同步改参数，风险高 |
+| 技术标识 | `libuv-watch`、`inotify`、health 分组名、命令名 / 选项名 |
+| `<Plug>` 映射说明 | LuaSnip / Comment 的注释型映射，which-key 默认不显示 |
+| LSP 服务器自身消息 | 不属于 Neovim |
+
+> **两处已知取舍**（都在源码注释里写明了原因）：
+> 1. Comment.nvim 的 `gc`/`gcc` 等是**回调型映射**（`rhs` 为 nil），不能用 `vim.keymap.set`
+>    重设 desc（会让注释功能失效），所以改为直接汉化插件源码里的 desc 字符串。
+> 2. noice 的路由过滤器 `find` 匹配的是**原始英文**（翻译发生在之后的渲染阶段），
+>    写中文永远匹配不上 —— 配置里统一用英文原文匹配。
+
 
 ---
 
@@ -546,15 +639,47 @@ java -version
 
 ### Q8：插件界面又变回英文了？
 
-说明该插件更新后源码文本有变动，导致汉化规则失配。启动时若有替换失败项会通过通知提示具体文件，在 `lua/core/chinese.lua` 的 `plugin_patches` 中按新文本更新对应规则即可。
+说明该插件更新后源码文本有变动，导致汉化规则失配。排查顺序：
 
-### Q9：`gc`/`gcc`/`gb` 的说明怎么变成中文的？
+1. 先跑 `:I18nRules` —— 输出里带 `!!` 的是目标文件不存在（插件被卸载或路径变了）
+2. 再跑 `:I18nPatch` —— 会打印本轮改写与失败项
+3. 看日志 `stdpath("state")/i18n.log`（Windows：`%LOCALAPPDATA%\nvim-data\i18n.log`）
+4. 定位到新文本后，改 `lua/core/i18n/patches/<插件>.lua` 里对应的规则
+
+> 启动时若有失败项会弹通知提示具体文件。规则写法与注意事项见「界面汉化」一节。
+
+### Q9：`:checkhealth` 里的中文是怎么实现的？
+
+两套路径：
+
+- **插件**（nvim-lspconfig / nvim-treesitter / render-markdown / LuaSnip 等）：直接用汉化规则替换源码文案
+- **nvim 本体**（`vim.health` / `vim.lsp` / `vim.provider` / `vim.pack`）：**不改 nvim 安装目录**，
+  而是在配置目录放同名模块覆盖（rtp 优先级更高）。源文件在 `scripts/health-core/`，启动时自动部署
+
+> 注：health 报告里的**分组名**（如 `vim.lsp`）和含 `%s` 的格式化串保留英文
+> —— 前者是命令参数，后者改了要同步改参数，风险高。
+
+### Q10：`gc`/`gcc`/`gb` 的说明怎么变成中文的？
 
 做法是**直接汉化 Comment.nvim 源码里的 `desc` 字符串**（由 patch 机制自动完成）。
 
 **注意**：不要试图在 `keymaps.lua` 里重设这些键位 —— 它们是 Lua 回调型映射（`rhs` 为 `nil`），重设会导致注释功能失效。
 
-### Q10：修改配置后没生效？
+### Q11：`:w` 保存后没有提示？
+
+这是**有意为之**：`plugins/noice.lua` 里把 `written` / `yanked` 消息路由为 `skip = true`（静默）。
+
+想看到提示就把对应路由改成视图，例如：
+
+```lua
+{ filter = { event = "msg_show", kind = "", find = "written" }, view = "mini" }
+```
+
+> ⚠️ 两个已踩过的坑（都写在 `noice.lua` 注释里）：
+> 1. 路由的 `find` 匹配的是**原始英文**消息，写中文（如 `find = "已保存"`）永远匹配不上
+> 2. **不要用 `view = "cmdline"`** —— 它会被命令结束后的清屏覆盖，看起来像"没生效"
+
+### Q12：修改配置后没生效？
 
 ```vim
 :source $MYVIMRC       " 重载配置（部分插件需重启才生效）
@@ -563,7 +688,7 @@ java -version
 
 最稳妥的方式是重启 nvim。
 
-### Q11：启动变慢了怎么排查？
+### Q13：启动变慢了怎么排查？
 
 ```vim
 :Lazy profile          " 查看各插件加载耗时
@@ -572,7 +697,7 @@ java -version
 
 启动耗时也会显示在启动页上，正常约 300 ms 以内。本配置已关闭联网检查更新，这也是启动速度的保证之一。
 
-### Q12：关掉一个文件时 nvim 一起退出了，怎么只关文件？
+### Q14：关掉一个文件时 nvim 一起退出了，怎么只关文件？
 
 `:q` 关闭的是**窗口**，而只剩一个窗口时 nvim 就会随之退出。想"关闭文件但留在 nvim 里"应该操作**缓冲区**：
 
@@ -593,7 +718,7 @@ java -version
 > **缓冲区**是打开的文件，**窗口**是它的显示区域，**标签页**是一组窗口的集合。
 > 编辑多个文件推荐用**缓冲区**（`:bd` 关闭、`Shift+L/H` 切换），而不是开一堆窗口。
 
-### Q13：关闭文件后想回到启动页（MYNVIM 主界面）？
+### Q15：关闭文件后想回到启动页（MYNVIM 主界面）？
 
 启动页只在 **nvim 启动时**自动出现一次。关掉文件后它不会自动回来，手动唤出即可：
 
@@ -609,6 +734,30 @@ java -version
 ---
 
 ## 更新日志
+
+### 2026-10-06
+
+**汉化全面升级：从"部分汉化"到"完整汉化"**
+
+- **引擎重构**：`core/chinese.lua`（358 行单文件）→ `core/i18n/` 模块化
+  - 新增**替换后语法校验**：改写前先 `load()` 验证，不通过就自动放弃（杜绝把插件改坏）
+  - 新增**引号变体自动展开**：规则写 `'foo'` 自动补 `"foo"` 版本
+  - 规则按原文长度降序执行，避免前缀规则抢先命中
+  - 改为二进制读写，不再改动文件行尾
+- **规则规模**：13 组 → **115 组 / 924 条**；消息正则 14 条 → **266 条**
+- **补齐遗漏**：Mason 帮助页 6 个文件、启动页主题原为手工改源码未纳入规则（插件更新即失效），现已全部纳入
+- **键位菜单**：which-key 内置说明 156 条、nvim-tree 键位提示 59 条、Telescope `<C-/>` 键位表、
+  `<C-w>`/`g`/`z`/操作符/文本对象全部汉化；隐藏了 `<C-w>d`/`<C-w><C-d>`（功能为浮窗显示诊断，用户不用）
+- **checkhealth 汉化**：插件 63 条 + 本体 208 条（本体用"配置目录同名模块覆盖"，**不改 nvim 安装目录**）
+- **中文帮助**：新增 `doc/nvim-cn.txt` 与 `'helplang' = cn,en`，自动生成 `doc/tags-cn`
+- **新增命令**：`:I18nPatch` / `:I18nRules` / `:I18nAudit` / `:I18nHelpTags`
+- **新增维护工具**：`scripts/i18n-*.lua`（审计、消息自检、命令与映射清单）、`scripts/health-core/`
+- **修复两个真实缺陷**：
+  1. `mason/package_list.lua` 里数据字段 `"languages"` 被误译成 `"语言"`，导致按语言搜索失效
+  2. telescope 的 `ft_to_lang` 兼容补丁在重构时丢失，导致预览 Markdown 报 `attempt to call field 'ft_to_lang'`
+     （现统一放在 `patches/compat.lua`）
+- **noice 配置修正**：路由 `find` 必须用英文原文匹配（翻译发生在渲染阶段）；`view = "cmdline"` 会被清屏覆盖；
+  渲染层翻译需用 nui 的 `Text:set()` 同步长度，否则报 `Invalid 'end_col'`
 
 ### 2026-10-04
 

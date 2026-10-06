@@ -36,3 +36,11 @@ opt.signcolumn = "yes"
 
 -- 设置主题
 vim.cmd[[colorscheme tokyonight-moon]]
+
+-- ===== 中文优先 =====
+-- 'helplang'：`:help` 查找帮助时优先中文（help.cnx / tags-cn）。
+--   官方 nvim 只自带英文帮助，但：
+--     · `:Tutor` 有官方中文教程（runtime/tutor/zh/），设了它才会默认用中文；
+--     · 以后若在 doc/ 放入中文帮助页（help.cnx + helptags 生成的 tags-cn），
+--       会自动优先显示中文，找不到时回退英文，无副作用。
+opt.helplang = "cn,en"

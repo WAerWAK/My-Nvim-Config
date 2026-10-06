@@ -11,5 +11,5 @@ require("toggleterm").setup {
         insert_mappings = true,  -- 启用插入模式的快捷键
         terminal_mappings = true,  -- 启用终端模式的快捷键
         close_on_exit = true,  -- 退出时关闭终端
-        winbar = 'Terminal',  -- 启用 winbar, 设置为 "Terminal" 显示
+        winbar = '终端',  -- 启用 winbar, 设置为 "终端" 显示
 }

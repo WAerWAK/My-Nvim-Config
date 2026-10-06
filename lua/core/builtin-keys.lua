@@ -54,6 +54,14 @@ wincmd("-", "减少高度")
 wincmd(">", "增加宽度")
 wincmd("<", "减少宽度")
 
--- ---------- 诊断 ----------
--- <C-w>d 的行为与 gO 等文档符号命令类似，涉及 LSP 与浮窗，保持原生
--- （不在此映射，菜单里仍为英文，属有意保留）
+-- ---------- 隐藏两个用不到的英文菜单项 ----------
+-- <C-w>d / <C-w><C-d>：按 nvim 官方定义（:help CTRL-W_d）是
+--   「用浮窗显示光标所在行的 LSP 诊断」= vim.diagnostic.open_float()
+--   —— 注意它**不是**"跳转到诊断"（跳转是 ]d / [d，已汉化）。
+-- 用户明确不用该功能，且它的 desc 是英文（nvim 内置，无法安全汉化），
+-- 所以在这里直接删除映射：既不占位、也不会出现在 which-key 菜单里。
+-- 想恢复：把下面三行注释掉，或执行
+--   :lua vim.keymap.set('n','<C-w>d', vim.diagnostic.open_float, {desc='查看光标下的诊断'})
+for _, lhs in ipairs({ "<C-w>d", "<C-w><C-d>" }) do
+	pcall(vim.keymap.del, "n", lhs)
+end
